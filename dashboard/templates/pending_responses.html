@@ -1,0 +1,88 @@
+{% include 'header.html' %}
+  <div class='container-fluid'>
+    <div class='row'>
+      <div class='col-md-12'>
+        <table class='table table-condensed table-hover'>
+          <caption>Pending Responses ({{pending_response_count}})</caption>
+          <thead>
+            <tr>
+              <th class='col-sm-2'>Text</th>
+              <th class='col-sm-1'>Generated At</th>
+              <th class='col-sm-1'>From Plugin</th>
+              <th class='col-sm-1'>In Response To</th>
+              <th class='col-sm-1'>To Channel</th>
+              <th class='col-sm-1'>To User</th>
+              <th class='col-sm-1'>Is Sent?</th>
+              <th class='col-sm-1'>Approve?</th>
+              <th class='col-sm-1'>Delete?</th>
+            <tr>
+          </thead>
+          <tbody>
+            {% for pending_response in pending_responses %}
+              <tr>
+                <td>{{pending_response.text}}</td>
+                <td>{{pending_response.generated_at}}</td>
+                <td>{{pending_response.from_plugin}}</td>
+                <td>{{pending_response.in_response_to.text}}</td>
+                <td>{{pending_response.to_channel.slack_name}}</td>
+                <td>{{pending_response.to_user.slack_name}}</td>
+                <td id='is_sent_{{pending_response.id}}'>{{pending_response.is_sent}}</td>
+                <td><button id='approve_{{pending_response.id}}' pending_response_id='{{pending_response.id}}' class='btn btn-danger' onclick='approve(this);'>Yes</button></td>
+                <td><button id='delete_{{pending_response.id}}' pending_response_id='{{pending_response.id}}' class='btn btn-warning' onclick='del(this);'>Yes</button></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script type='text/javascript'>
+    function approve(button) {
+      if (confirm('Are you sure?')) {
+        var pending_response_id = button.getAttribute('pending_response_id')
+        promise.put(
+          '/pending_responses/' + pending_response_id,
+          JSON.stringify({is_approved: true}),
+          {'Content-type': 'application/json'}
+        ).then( function(error, text, xhr) {
+          if (error) {
+            alert('Error!\n' + xhr.status)
+          }
+          else {
+            var delete_button = document.getElementById('delete_' + pending_response_id)
+            disable_buttons(button, delete_button, 'Done!', 'Approved')
+            update_is_sent(pending_response_id)
+          }
+        })
+      }
+    }
+    function del(button) {
+      var pending_response_id = button.getAttribute('pending_response_id')
+      promise.del(
+        '/pending_responses/' + pending_response_id
+      ).then( function(error, text, xhr) {
+        if (error) {
+          alert('Error!\n' + xhr.status)
+        }
+        else {
+          var approve_button = document.getElementById('approve_' + pending_response_id)
+          disable_buttons(button, approve_button, 'Done!', 'Deleted')
+        }
+      })
+    }
+    function disable_buttons(button1, button2, message1, message2) {
+      classes1 = 'btn btn-success'
+      classes2 = 'btn'
+      button1.innerHTML = message1
+      button1.className = classes1
+      button1.onclick = ''
+      button2.innerHTML = message2
+      button2.className = classes2
+      button2.onclick = ''
+    }
+    function update_is_sent(pending_response_id) {
+      var table_cell = document.getElementById('is_sent_' + pending_response_id)
+      table_cell.innerHTML = 'True'
+    }
+  </script>
+{% include 'footer.html' %}

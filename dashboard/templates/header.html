@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Slackotron</title>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:500,100,300' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' type='text/css' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.css'>
+    <link rel='stylesheet' type='text/css' href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <script type='text/javascript' src='//code.jquery.com/jquery-2.1.3.min.js'></script>
+    <script type='text/javascript' src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js'></script>
+    <script type='text/javascript' src='//cdn.rawgit.com/jrbeaudoin/promisejs/master/promise.min.js'></script>
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <nav role='navigation' class='navbar navbar-inverse navbar-fixed-top'>
+      <div class='container-fluid'>
+        <div class='navbar-header'>
+          <a class='navbar-brand' href='/'>Slackotron</a>
+        </div>
+        <div>
+          <ul class='nav navbar-nav'>
+            {% if active_page_name == '/' %}
+              <li class='active'><a href='/'>Overview</a></li>
+            {% else %}
+              <li><a href='/'>Overview</a></li>
+            {% endif %}
+            {% if active_page_name == 'pending_responses' %}
+              <li class='active'><a href='/pending_responses'>Pending Responses</a></li>
+            {% else %}
+              <li><a href='/pending_responses'>Pending Responses</a></li>
+            {% endif %}
+            {% if active_page_name == 'channel_security' %}
+              <li class='active'><a href='/channel_security'>Channel Security</a></li>
+            {% else %}
+              <li><a href='/channel_security'>Channel Security</a></li>
+            {% endif %}
+            {% if active_page_name == 'post_a_message' %}
+              <li class='active'><a href='/post_a_message'>Post a Message</a></li>
+            {% else %}
+              <li><a href='/post_a_message'>Post a Message</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>

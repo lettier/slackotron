@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+
+'''
+  DAVID LETTIER
+  (C) 2015.
+
+  http://www.lettier.com/
+
+  SLACKOTRON
+
+  An extensible Slack bot.
+'''
+
+'''
+  SENTIMENT_SUBJECTIVITY_THRESHOLD
+
+  Valid range: [0.0, 1.0]
+'''
+
+SENTIMENT_SUBJECTIVITY_THRESHOLD = 0.5
+
+'''
+  POSITIVE_RESPONSES
+
+  An array of polarity thresholds and responses.
+
+  (Threshold with valid range: [0.0, 1.0], response text),
+  ...
+'''
+
+POSITIVE_RESPONSES = [
+    (0.1, ':thumbsup:'),
+    (0.2, ':smile:'),
+    (0.3, ':smiley:'),
+    (0.4, ':satisfied:'),
+    (0.5, ':grinning:'),
+    (0.6, ':grin:'),
+    (0.7, ':joy:'),
+    (0.8, ':raising_hand:'),
+    (1.0, ':raised_hands:')
+]
+
+'''
+  NEGATIVE_RESPONSES
+
+  An array of polarity thresholds and responses.
+
+  (Threshold with valid range: [0.0, 1.0], response text),
+  ...
+'''
+
+NEGATIVE_RESPONSES = [
+    (0.1, ':disappointed:'),
+    (0.2, ':expressionless:'),
+    (0.3, ':pensive:'),
+    (0.4, ':frowning:'),
+    (0.5, ':scream:'),
+    (0.6, ':disappointed_relieved:'),
+    (0.7, ':sob:'),
+    (0.8, ':astonished:'),
+    (0.9, ':dizzy_face:'),
+    (1.0, ':fearful:'),
+]

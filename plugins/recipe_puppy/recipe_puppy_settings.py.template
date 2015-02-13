@@ -1,0 +1,18 @@
+#!/usr/bin/env python
+
+'''
+  DAVID LETTIER
+  (C) 2015.
+
+  http://www.lettier.com/
+
+  Slackotron--An extensible slack bot.
+'''
+
+'''
+  RECIPEPUPPY_API_URL
+
+  The API endpoint.
+'''
+
+RECIPEPUPPY_API_URL = 'http://www.recipepuppy.com/api'

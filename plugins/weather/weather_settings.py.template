@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+
+'''
+  DAVID LETTIER
+  (C) 2015.
+
+  http://www.lettier.com/
+
+  Slackotron--An extensible slack bot.
+'''
+
+'''
+  OPENWEATHER_API_URL
+
+  The API endpoint.
+'''
+
+OPENWEATHER_API_URL = 'http://api.openweathermap.org/data/2.5/weather'
+
+'''
+  OPENWEATHER_URL
+
+  The HTTP page endpoint.
+'''
+
+OPENWEATHER_URL = 'http://openweathermap.org/city/'
+'''
+  CITY
+'''
+
+CITY = 'beverly hills'
+
+'''
+  STATE
+
+  Two character state abbreviation.
+'''
+
+STATE = 'ca'
+
+'''
+  ZIP
+'''
+
+ZIP = '90210'
+
+'''
+  COUNTRY
+
+  Two character ISO country code.
+'''
+
+COUNTRY = 'us'
+
+'''
+  USE_FAHRENHEIT
+
+  Use Fahrenheit if true, otherwise use Celsius.
+'''
+
+USE_FAHRENHEIT = True

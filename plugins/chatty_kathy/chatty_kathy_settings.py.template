@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+'''
+  DAVID LETTIER
+  (C) 2015.
+
+  http://www.lettier.com/
+
+  Slackotron--An extensible slack bot.
+'''
+
+'''
+  TWITTER_SEARCH_URL
+
+'''
+
+TWITTER_SEARCH_URL = 'https://twitter.com/search'
+
+'''
+  ACTIVATION_PROBABILITY
+
+  The percentage of the time that the plugin with give a response.
+'''
+
+ACTIVATION_PROBABILITY = 100

@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+
+'''
+  NYC_OPEN_DATA_API_URL
+
+  The API endpoint to the NYC restaurant grade database.
+  https://data.cityofnewyork.us/Health/DOHMH-New-York-
+  City-Restaurant-Inspection-Results/xx67-kt59
+'''
+
+NYC_OPEN_DATA_API_URL = 'http://data.cityofnewyork.us/resource/xx67-kt59.json'
+
+'''
+  CATEGORIES
+
+  A list of different types of cuisine.
+'''
+
+CATEGORIES = [
+    'american ',
+    'chinese',
+    'bakery',
+    'soups',
+    'soups & sandwiches',
+    'pizza',
+    'mexican',
+    'caribbean',
+    'sandwiches',
+    'hamburgers',
+    'japanese',
+    'steak',
+    'mediterranean'
+]
+
+'''
+  ZIP
+
+  The zipcode you wish to search in.
+'''
+
+ZIP = '10466'

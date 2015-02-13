@@ -1,0 +1,5 @@
+*.pyc
+*.swp
+*settings.py
+dependencies/*
+database/slackotron.db*
