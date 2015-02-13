@@ -6,7 +6,7 @@
 
   http://www.lettier.com/
 
-  Slackotron--An extensible slack bot.
+  Slackotron
 '''
 
 import urllib

@@ -1,36 +1,40 @@
 {% include 'header.html' %}
-  <div class='container'>
+  <div class='container-fluid'>
     <div class='row'>
       <div class='col-md-6'>
         <table class='table table-condensed table-striped'>
           <caption>Slack Channels ({{channel_count}})</caption>
           <thead>
             <tr>
-              <th>Slack Name</th>
-              <th>Slack ID</th>
-              <th>Is Direct?</th>
-              <th>Is Secure?</th>
+              <th class='col-md-1'>Slack Name</th>
+              <th class='col-md-1'>Slack ID</th>
+              <th class='col-md-1'>Is Direct?</th>
+              <th class='col-md-1'>Is Secure?</th>
             <tr>
           </thead>
-          <tbody>
-            {% for direct_channel in direct_channels %}
-              <tr>
-                <td>{{direct_channel.direct_channel_user_name()}}</td>
-                <td>{{direct_channel.slack_id}}</td>
-                <td>{{direct_channel.is_direct}}</td>
-                <td>{{direct_channel.is_secure}}</td>
-              </tr>
-            {% endfor %}
-            {% for channel in channels %}
-              <tr>
-                <td>{{channel.slack_name}}</td>
-                <td>{{channel.slack_id}}</td>
-                <td>{{channel.is_direct}}</td>
-                <td>{{channel.is_secure}}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
         </table>
+        <div class='table-content'>
+          <table class='table table-condensed table-striped'>
+            <tbody>
+              {% for direct_channel in direct_channels %}
+                <tr>
+                  <td class='col-md-1'>{{direct_channel.direct_channel_user_name()}}</td>
+                  <td class='col-md-1'>{{direct_channel.slack_id}}</td>
+                  <td class='col-md-1'>{{direct_channel.is_direct}}</td>
+                  <td class='col-md-1'>{{direct_channel.is_secure}}</td>
+                </tr>
+              {% endfor %}
+              {% for channel in channels %}
+                <tr>
+                  <td class='col-md-1'>{{channel.slack_name}}</td>
+                  <td class='col-md-1'>{{channel.slack_id}}</td>
+                  <td class='col-md-1'>{{channel.is_direct}}</td>
+                  <td class='col-md-1'>{{channel.is_secure}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
       <div class='col-md-6'>
         <table class='table table-condensed table-striped'>
@@ -42,16 +46,20 @@
               <th>Is Slackbot?</th>
             <tr>
           </thead>
-          <tbody>
-            {% for user in users %}
-              <tr>
-                <td>{{user.slack_name}}</td>
-                <td>{{user.slack_id}}</td>
-                <td>{{user.is_slackbot}}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
         </table>
+        <div class='table-content'>
+          <table class='table table-condensed table-striped'>
+            <tbody>
+              {% for user in users %}
+                <tr>
+                  <td>{{user.slack_name}}</td>
+                  <td>{{user.slack_id}}</td>
+                  <td>{{user.is_slackbot}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

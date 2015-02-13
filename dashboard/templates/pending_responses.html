@@ -17,22 +17,34 @@
               <th class='col-sm-1'>Delete?</th>
             <tr>
           </thead>
-          <tbody>
-            {% for pending_response in pending_responses %}
-              <tr>
-                <td>{{pending_response.text}}</td>
-                <td>{{pending_response.generated_at}}</td>
-                <td>{{pending_response.from_plugin}}</td>
-                <td>{{pending_response.in_response_to.text}}</td>
-                <td>{{pending_response.to_channel.slack_name}}</td>
-                <td>{{pending_response.to_user.slack_name}}</td>
-                <td id='is_sent_{{pending_response.id}}'>{{pending_response.is_sent}}</td>
-                <td><button id='approve_{{pending_response.id}}' pending_response_id='{{pending_response.id}}' class='btn btn-danger' onclick='approve(this);'>Yes</button></td>
-                <td><button id='delete_{{pending_response.id}}' pending_response_id='{{pending_response.id}}' class='btn btn-warning' onclick='del(this);'>Yes</button></td>
-              </tr>
-            {% endfor %}
-          </tbody>
         </table>
+        <div class='table-content'>
+          <table class='table table-condensed table-hover'>
+            <tbody>
+              {% for pending_response in pending_responses %}
+                <tr>
+                  <td class='col-sm-2'>{{pending_response.text}}</td>
+                  <td class='col-sm-1'>{{pending_response.generated_at}}</td>
+                  <td class='col-sm-1'>{{pending_response.from_plugin}}</td>
+                  <td class='col-sm-1'>{{pending_response.in_response_to.text}}</td>
+                  <td class='col-sm-1'>{{pending_response.to_channel.slack_name}}</td>
+                  <td class='col-sm-1'>{{pending_response.to_user.slack_name}}</td>
+                  <td class='col-sm-1' id='is_sent_{{pending_response.id}}'>{{pending_response.is_sent}}</td>
+                  <td class='col-sm-1'>
+                    <button id='approve_{{pending_response.id}}' pending_response_id='{{pending_response.id}}' class='btn btn-danger' onclick='approve(this);'>
+                      Yes
+                    </button>
+                  </td>
+                  <td class='col-sm-1'>
+                    <button id='delete_{{pending_response.id}}' pending_response_id='{{pending_response.id}}' class='btn btn-warning' onclick='del(this);'>
+                      Yes
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

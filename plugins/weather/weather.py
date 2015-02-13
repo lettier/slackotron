@@ -6,7 +6,7 @@
 
   http://www.lettier.com/
 
-  Slackotron--An extensible slack bot.
+  Slackotron
 '''
 
 import requests
@@ -22,9 +22,12 @@ class Weather(plugins.plugin_base.PluginBase):
   country = weather_settings.COUNTRY
   use_fahrenheit = weather_settings.USE_FAHRENHEIT
   activation_strings = [
-      "what's the weather like?",
-      "what's the weather?",
-      "how's the weather?"
+      'what\'s the weather like',
+      'what\'s the weather',
+      'how\'s the weather',
+      'whats the weather like',
+      'whats the weather',
+      'hows the weather'
   ]
 
   def _callback(self, channel, user, message):

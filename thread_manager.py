@@ -6,7 +6,7 @@
 
   http://www.lettier.com/
 
-  Slackotron--An extensible slack bot.
+  Slackotron
 '''
 
 import time
@@ -26,7 +26,7 @@ from models import Message
 logging.basicConfig(level=logging.WARNING)
 
 
-class ThreadManager(object):
+class SlackotronThreadManager(object):
   threads = {}
   thread_types = [
       'subscriber',
@@ -218,7 +218,7 @@ class SlackChannelPublisher(SlackotronThread):
       is_approved = True
       is_sent = False
       is_deleted = False
-      with Channel._meta.database.transaction():
+      with Channel.database().transaction():
         self.channel = Channel.get(
             Channel.id == self.channel.get_id()
         )

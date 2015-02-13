@@ -6,9 +6,7 @@
 
   http://www.lettier.com/
 
-  SLACKOTRON
-
-  An extensible slack bot.
+  Slackotron
 '''
 
 import requests

@@ -6,7 +6,7 @@
 
   http://www.lettier.com/
 
-  Slackotron--An extensible slack bot.
+  Slackotron
 '''
 
 import sys
@@ -38,15 +38,14 @@ class Slackotron(Scribe, object):
   bot_icon_emoji = slackotron_settings.BOT_ICON_EMOJI
   bot_slack_id = slackotron_settings.BOT_SLACK_ID
   profanity_filter_on = slackotron_settings.PROFANITY_FILTER_ON
-  safety_on = slackotron_settings.SAFETY_ON
   slack = slack_service.Slack()
   dashboard_manager = dashboard.dashboard_manager.DashboardManager()
   plugin_manager = plugins.plugin_manager.PluginManager()
-  thread_manager = thread_manager.ThreadManager()
+  thread_manager = thread_manager.SlackotronThreadManager()
   database_manager = database.database_manager.DatabaseManager()
 
   def __init__(self):
-    self.info('Slacko Bot:')
+    self.info('Slackotron Bot Name:')
     self.info(self.bot_name)
     if not self.slack.api_valid() or not self.slack.auth_valid():
       self.critical('API and/or auth not valid! Exiting.')
@@ -56,7 +55,7 @@ class Slackotron(Scribe, object):
     self.info('Loading channels and users...')
     channel_id_to_name_map, channel_name_to_id_map = \
         self.slack.channel_id_name_maps()
-    with self.database_manager.db.transaction():
+    with self.database_manager.transaction():
       for k, v in channel_id_to_name_map.items():
         is_direct = True if k.startswith('D0') else False
         try:

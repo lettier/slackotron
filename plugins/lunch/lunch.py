@@ -6,9 +6,7 @@
 
   http://www.lettier.com/
 
-  SLACKOTRON
-
-  An extensible slack bot.
+  Slackotron
 '''
 
 import requests
@@ -22,9 +20,10 @@ class Lunch(plugins.plugin_base.PluginBase):
   categories = lunch_settings.CATEGORIES
   zipcode = lunch_settings.ZIP
   activation_strings = [
-      "what's for lunch?",
-      "give me a lunch suggestion.",
-      "what should we have for lunch?"
+      'what\'s for lunch',
+      'whats for lunch',
+      'give me a lunch suggestion',
+      'what should we have for lunch'
   ]
 
   def _callback(self, channel, user, message):
@@ -41,16 +40,29 @@ class Lunch(plugins.plugin_base.PluginBase):
         params=params
     ).json()
     if len(response_json) == 0:
-      return None
-    random_choice = random.choice(response_json)
-    return "um...how about " + \
+      return 'an apple?'
+    choices = []
+    for choice in response_json:
+      if 'dba' in choice:
+        if 'building' in choice:
+          if 'street' in choice:
+            if 'grade' in choice:
+              choices.append(choice)
+    if len(choices) == 0:
+      return 'I dunno. What did you bring?'
+    random_choice = random.choice(choices)
+    name = random_choice['dba'].title().replace("'S", "'s")
+    building = random_choice['building'].strip().title()
+    street = ' '.join(random_choice['street'].strip().title().split())
+    grade = random_choice['grade']
+    return 'um...how about ' + \
         random_cuisine_description.rstrip() + \
-        "? Looks like " + \
-        random_choice['dba'].title().replace("'S", "'s") + \
-        " is open. They're at " + \
-        random_choice['building'].lstrip().rstrip().title() + \
+        '? Looks like ' + \
+        name + \
+        ' is open. They\'re at ' + \
+        building + \
         ' ' + \
-        ' '.join(random_choice['street'].lstrip().rstrip().title().split()) + \
+        street + \
         '. They got a ' + \
-        random_choice['grade'] + \
+        grade + \
         '.'

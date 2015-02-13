@@ -6,7 +6,7 @@
 
   http://www.lettier.com/
 
-  Slackotron--An extensible slack bot.
+  Slackotron
 '''
 
 import time
@@ -16,10 +16,14 @@ import database.database_manager
 
 class Base(peewee.Model):
   class Meta:
-    database = database.database_manager.DatabaseManager.db
+    database = database.database_manager.DatabaseManager.database
 
   def __str__(self):
     return '%s()' % (self.__class__.__name__)
+
+  @classmethod
+  def database(cls):
+    return cls._meta.database
 
 
 class Channel(Base):

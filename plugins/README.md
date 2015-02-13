@@ -1,8 +1,24 @@
-## Slackotron
+# Slackotron
 
-A [Slack](https://api.slack.com/) bot customizable via plugins.
+A [Slack](https://www.slack.com/) bot customizable via plugins.
 
-### Creating a Plugin
+## Current Plugins
+
+* beer - gives a random beer recommendation
+* big_lebowski - gives a random quote from the movie
+* calculator_duck - gives the answer to a mathematical expression
+* chatty_kathy - analyzes a user's text and finds a (somewhat) related reply from the internet
+* chuck_norris - gives a random chuck norris joke
+* clean_up - deletes either the bot's or bot operator's Slack messages
+* happy_sad - analyzes a user's text for sentiment and sends an appropriate emoji
+* lunch - suggests a random place to grab lunch
+* net_lingo - translates internet jargon/acronyms
+* recipe_puppy - gives a random recipe based on user given ingredients
+* slack_scrapper - downloads all Slack messages
+* weather - gives the current weather condition with a link
+* yoda_speak - translates a user's text to sound like yoda
+
+## Creating a Plugin
 
 ```bash
 cd plugins/
@@ -13,7 +29,7 @@ touch my_plugin.py
 touch my_plugin_settings.py
 ```
 
-#### ./myplugin.py
+### ./myplugin.py
 
 ```python
 #!/usr/bin/env python
@@ -50,7 +66,7 @@ class MyPlugin(plugins.plugin_base.PluginBase):
     # ...to do nothing.
 ```
 
-#### ./myplugin_settings.py
+### ./myplugin_settings.py
 
 ```python
 #!/usr/bin/env python

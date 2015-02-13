@@ -2,7 +2,7 @@
   <div class='container-fluid'>
     <div class='row'>
       <div class='col-md-12'>
-        <table class='table table-condensed table-hover'>
+        <table class='table table-condensed'>
           <caption>Channels ({{channel_count}})</caption>
           <thead>
             <tr>
@@ -14,29 +14,49 @@
               <th class='col-sm-1'>Make Insecure?</th>
             <tr>
           </thead>
-          <tbody>
-            {% for direct_channel in direct_channels %}
-              <tr>
-                <td>{{direct_channel.direct_channel_user_name()}}</td>
-                <td>{{direct_channel.slack_id}}</td>
-                <td>{{direct_channel.is_direct}}</td>
-                <td id='is_secure_{{direct_channel.id}}'>{{direct_channel.is_secure}}</td>
-                <td><button id='make_secure_{{direct_channel.id}}' channel_id='{{direct_channel.id}}' class='btn btn-info' onclick='make_secure(this);'>Yes</button></td>
-                <td><button id='make_insecure_{{direct_channel.id}}' channel_id='{{direct_channel.id}}' class='btn btn-danger' onclick='make_insecure(this);'>Yes</button></td>
-              </tr>
-            {% endfor %}
-            {% for channel in channels %}
-              <tr>
-                <td>{{channel.slack_name}}</td>
-                <td>{{channel.slack_id}}</td>
-                <td>{{channel.is_direct}}</td>
-                <td id='is_secure_{{channel.id}}'>{{channel.is_secure}}</td>
-                <td><button id='make_secure_{{channel.id}}' channel_id='{{channel.id}}' class='btn btn-info' onclick='make_secure(this);'>Yes</button></td>
-                <td><button id='make_insecure_{{channel.id}}' channel_id='{{channel.id}}' class='btn btn-danger' onclick='make_insecure(this);'>Yes</button></td>
-              </tr>
-            {% endfor %}
-          </tbody>
         </table>
+        <div class='table-content'>
+          <table class='table table-condensed table-hover'>
+            <tbody>
+              {% for direct_channel in direct_channels %}
+                <tr>
+                  <td class='col-sm-1'>{{direct_channel.direct_channel_user_name()}}</td>
+                  <td class='col-sm-1'>{{direct_channel.slack_id}}</td>
+                  <td class='col-sm-1'>{{direct_channel.is_direct}}</td>
+                  <td class='col-sm-1' id='is_secure_{{direct_channel.id}}'>{{direct_channel.is_secure}}</td>
+                  <td class='col-sm-1'>
+                    <button id='make_secure_{{direct_channel.id}}' channel_id='{{direct_channel.id}}' class='btn btn-info' onclick='make_secure(this);'>
+                      Yes
+                    </button>
+                  </td>
+                  <td class='col-sm-1'>
+                    <button id='make_insecure_{{direct_channel.id}}' channel_id='{{direct_channel.id}}' class='btn btn-danger' onclick='make_insecure(this);'>
+                      Yes
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+              {% for channel in channels %}
+                <tr>
+                  <td class='col-sm-1'>{{channel.slack_name}}</td>
+                  <td class='col-sm-1'>{{channel.slack_id}}</td>
+                  <td class='col-sm-1'>{{channel.is_direct}}</td>
+                  <td class='col-sm-1' id='is_secure_{{channel.id}}'>{{channel.is_secure}}</td>
+                  <td class='col-sm-1'>
+                    <button id='make_secure_{{channel.id}}' channel_id='{{channel.id}}' class='btn btn-info' onclick='make_secure(this);'>
+                      Yes
+                    </button>
+                  </td>
+                  <td class='col-sm-1'>
+                    <button id='make_insecure_{{channel.id}}' channel_id='{{channel.id}}' class='btn btn-danger' onclick='make_insecure(this);'>
+                      Yes
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

@@ -6,7 +6,7 @@
 
   http://www.lettier.com/
 
-  Slackotron--An extensible slack bot.
+  Slackotron
 '''
 
 '''
@@ -60,13 +60,13 @@ MAIN_RABBITMQ_EXCHANGE_NAME = 'slackotron'
   MAIN_RABBITMQ_QUEUE_NAME
 '''
 
-MAIN_RABBITMQ_QUEUE_NAME = 'respond_texts'
+MAIN_RABBITMQ_QUEUE_NAME = 'slackotron'
 
 '''
   MAIN_RABBITMQ_ROUTING_KEY
 '''
 
-MAIN_RABBITMQ_ROUTING_KEY = 'respond_texts'
+MAIN_RABBITMQ_ROUTING_KEY = 'slackotron'
 
 '''
   PLUGIN_RABBITMQ_EXCHANGE_NAME
@@ -138,8 +138,7 @@ BOT_NAME = 'Your Bot Name'
 '''
   BOT_ICON_URL
 
-  A link to an icon image that will be displayed next to your bot's
-  messages in the MONITOR_CHANNEL.
+  A link to an icon image that will be displayed next to your bot's messages.
 '''
 
 BOT_ICON_URL = 'http://your.bot_url.com/image.png'
@@ -174,20 +173,10 @@ BOT_SLACK_ID = str(BOT_SLACK_ID)
 PROFANITY_FILTER_ON = True
 
 '''
-  SAFETY_ON
-
-  If set to True, Slackotron will run every
-  response by you in the terminal. You must
-  type 'yes' to send the response.
-'''
-
-SAFETY_ON = True
-
-'''
   PLUGIN_ACTIVATION_THRESHOLD
 
   Each plugin has a list of one or more activtion strings that trigger
-  its execution. Slacko computes a channel's message similarity against
+  its execution. Slackotron computes a channel's message similarity against
   each activation string per plugin.
 
   The higher this is set, the closer a channel message must match a plugin's
@@ -201,9 +190,8 @@ PLUGIN_ACTIVATION_THRESHOLD = 0.8
 '''
   IGNORE_MESSAGE_SUBTYPES
 
-  Subtypes of messages that Slacko will ignore.
-  Currently set to ignore all non-human and non-file messages posted to the
-  MONITOR_CHANNEL.
+  Subtypes of messages that Slackotron will ignore.
+  Currently set to ignore all non-human and non-file messages.
 '''
 
 IGNORE_MESSAGE_SUBTYPES = [
@@ -222,8 +210,7 @@ IGNORE_MESSAGE_SUBTYPES = [
 '''
   IGNORE_BOTS
 
-  If True, Slacko will ignore all bot messages posted in
-  the MONITOR_CHANNEL.
+  If True, Slackotron will ignore all bot messages posted.
 '''
 
 IGNORE_BOTS = True

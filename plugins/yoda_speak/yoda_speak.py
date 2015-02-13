@@ -6,14 +6,13 @@
 
   http://www.lettier.com/
 
-  SLACKOTRON
-
-  An extensible Slack bot.
+  Slackotron
 '''
 
 import re
 import suds
 import random
+import models
 import plugins.plugin_base
 import yoda_speak_settings
 
@@ -28,8 +27,11 @@ class YodaSpeak(plugins.plugin_base.PluginBase):
     if random.randrange(100) >= self.activation_probability:
       return None
     try:
+      message_text = message.text
+      message_text = self.__fix_urls(message_text)
+      message_text = self.__fix_slack_user_ids(message_text)
       client = suds.client.Client(self.api_url)
-      response = client.service.yodaTalk(message.text)
+      response = client.service.yodaTalk(message_text)
       if response is not None and len(response) > 0:
         response = self.__replace_i(
             str(response)
@@ -39,11 +41,11 @@ class YodaSpeak(plugins.plugin_base.PluginBase):
         elif len(self.__scrub_urls(message.text).split()) == 0:
           return None
         else:
-          return self.__fix_urls(response)
+          return response
       else:
         return None
     except Exception as e:
-      self.warning(e)
+      self.error(e)
       return None
 
   def __replace_i(self, text):
@@ -62,8 +64,24 @@ class YodaSpeak(plugins.plugin_base.PluginBase):
       result.append(text_token)
     return ' '.join(result)
 
+  def __find_slack_user_ids(self, text):
+    re_compiled = re.compile('(?P<SLACK_USER_ID><@u.*?>)', flags=re.U | re.I)
+    slack_user_ids = re_compiled.findall(text)
+    return slack_user_ids
+
+  def __fix_slack_user_ids(self, text):
+    slack_user_ids = self.__find_slack_user_ids(text)
+    for slack_user_id in slack_user_ids:
+      slack_user_id_fixed = slack_user_id.replace('<@', '').replace('>', '')
+      try:
+        user = models.User.get(models.User.slack_id == slack_user_id_fixed)
+      except models.User.DoesNotExist:
+        continue
+      text = text.replace(slack_user_id, u'@' + user.slack_name)
+    return text
+
   def __find_urls(self, text):
-    re_compiled = re.compile('(?P<URL><https?:/ /.*?>)')
+    re_compiled = re.compile('(?P<URL><https?://.*?>)', flags=re.U | re.I)
     urls = re_compiled.findall(text)
     return urls
 
