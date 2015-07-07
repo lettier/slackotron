@@ -18,6 +18,7 @@ import yoda_speak_settings
 
 
 class YodaSpeak(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(yoda_speak_settings)
   api_url = yoda_speak_settings.API_URL
   activation_probability = yoda_speak_settings.ACTIVATION_PROBABILITY
   activation_strings = [

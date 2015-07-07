@@ -19,6 +19,7 @@ import plugins.plugin_base
 
 
 class RecipePuppy(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(recipe_puppy_settings)
   api_url = recipe_puppy_settings.RECIPEPUPPY_API_URL
   activation_strings = [
       'what can I make with'

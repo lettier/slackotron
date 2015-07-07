@@ -155,6 +155,11 @@ class PluginBase(Scribe, object):
           message_text = message_text.replace(word, '')
     return message_text
 
+  def _safe_set_config_from_env(self,config_module):
+    if os.getenv('SLACKOTRON_USE_ENV_CFG',None):
+        return self._set_config_from_env(config_module)
+    return False
+
   def _set_config_from_env(self,config_module):
     # Get subsection of env relating to plugin
     relevant_env = { k.replace("{}_".format(self._env_prefix),'',1), v 

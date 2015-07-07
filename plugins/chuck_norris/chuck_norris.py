@@ -16,6 +16,7 @@ import plugins.plugin_base
 
 
 class ChuckNorris(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(chuck_norris_settings)
   exclude = chuck_norris_settings.EXCLUDE
   activation_strings = [
       'tell me about chuck norris',

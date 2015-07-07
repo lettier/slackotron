@@ -15,6 +15,7 @@ from pattern.en import sentiment
 
 
 class HappySad(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(happy_sad_settings)
   sentiment_subjectivity_threshold = \
       happy_sad_settings.SENTIMENT_SUBJECTIVITY_THRESHOLD
   positive_responses = \

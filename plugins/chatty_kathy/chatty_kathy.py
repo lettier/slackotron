@@ -19,6 +19,7 @@ from bs4 import BeautifulSoup
 
 
 class ChattyKathy(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(chatty_kathy_settings)
   activation_strings = [
   ]
   activation_probability = chatty_kathy_settings.ACTIVATION_PROBABILITY
