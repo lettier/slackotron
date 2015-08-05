@@ -84,19 +84,19 @@ class ChattyKathy(plugins.plugin_base.PluginBase):
 
   def _twitter_conversation_links(self, raw_page):
     soup = BeautifulSoup(raw_page)
-    a_tags = soup.find_all(
-        'a',
-        class_='details with-icn js-details'
+    a_tags = soup.select(
+        'a.details.with-icn.js-details'
     )
     conversation_links = []
     for a_tag in a_tags:
-      span_tags = a_tag.find_all(
-          'span',
-          class_='expand-stream-item js-view-details'
+      span_tags = a_tag.select(
+          'span.expand-stream-item.js-view-details'
       )
       for span_tag in span_tags:
         if span_tag.text == 'View conversation':
           conversation_links.append(a_tag['href'])
+    if len(conversation_links) == 0:
+      self.warning('Conversation links were empty.')
     return conversation_links
 
   def _twitter_search_results(self, query):
@@ -109,7 +109,8 @@ class ChattyKathy(plugins.plugin_base.PluginBase):
           }
       )
       return result.text
-    except:
+    except Exception as e:
+      self.error(e)
       return ''
 
   def _strip_at_names(self, _string):
