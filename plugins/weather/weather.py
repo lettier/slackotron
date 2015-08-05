@@ -15,6 +15,7 @@ import plugins.plugin_base
 
 
 class Weather(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(weather_settings)
   url = weather_settings.OPENWEATHER_URL
   api_url = weather_settings.OPENWEATHER_API_URL
   city = weather_settings.CITY

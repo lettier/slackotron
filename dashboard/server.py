@@ -240,6 +240,7 @@ def user_count(users):
 
 if __name__ == '__main__':
   application.run(
+      host=slackotron_settings.DASHBOARD_HOST,
       port=slackotron_settings.DASHBOARD_PORT,
       debug=slackotron_settings.DASHBOARD_DEBUG
   )

@@ -9,6 +9,8 @@
   Slackotron
 '''
 
+import os
+import re
 import traceback
 import slackotron_settings
 import decorators
@@ -33,6 +35,7 @@ class PluginBase(Scribe, object):
   redis_port = slackotron_settings.REDIS_PORT
   slack = slack_service.Slack()
   activation_strings = []
+  _env_prefix = re.sub(r'''(?<!\A)([A-Z])''',r'''_\1''',self.__class__.__name__).upper()
 
   def _callback(self, rmq_body):
     pass
@@ -151,6 +154,26 @@ class PluginBase(Scribe, object):
         if word in message_text:
           message_text = message_text.replace(word, '')
     return message_text
+
+  def _safe_set_config_from_env(self,config_module):
+    if os.getenv('SLACKOTRON_USE_ENV_CFG',None):
+        return self._set_config_from_env(config_module)
+    return False
+
+  def _set_config_from_env(self,config_module):
+    # Get subsection of env relating to plugin
+    relevant_env = { k.replace("{}_".format(self._env_prefix),'',1), v 
+            for k,v in os.environ 
+            if k.startswith(self._env_prefix) }
+    if not relevant_env:
+        return False
+
+    plugin_setting_keys = set(filter(lambda n: not n.startswith('_'), dir(config_module)))
+
+    # Set values of plugin settings where env vars exist
+    for envkey, envval in relevant_env:
+      config_module.__setattr__(attr_name, envval)
+    return True
 
   def run(self):
     self.__initialize_redis()

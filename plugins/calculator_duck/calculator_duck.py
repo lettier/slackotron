@@ -17,6 +17,7 @@ import plugins.plugin_base
 
 
 class CalculatorDuck(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(calculator_duck_settings)
   api_url = calculator_duck_settings.DUCKDUCKGO_API_URL
   activation_strings = [
       'what is',

@@ -216,6 +216,17 @@ IGNORE_MESSAGE_SUBTYPES = [
 IGNORE_BOTS = True
 
 '''
+  DASHBOARD_HOST
+
+  Host address on which dashboard server listens.
+
+  default: 127.0.0.1 (local connections only)
+  set to 0.0.0.0 for global access
+'''
+
+DASHBOARD_HOST = '127.0.0.1'
+
+'''
   DASHBOARD_PORT
 
   The port to access the dashboard.

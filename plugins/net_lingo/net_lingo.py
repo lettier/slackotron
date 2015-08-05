@@ -16,6 +16,7 @@ import plugins.plugin_base
 
 
 class NetLingo(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(net_lingo_settings)
   url = net_lingo_settings.NETLINGO_URL
   activation_strings = [
   ]

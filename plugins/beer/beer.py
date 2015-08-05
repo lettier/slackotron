@@ -14,8 +14,8 @@ import requests
 import beer_settings
 import plugins.plugin_base
 
-
 class Beer(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(beer_settings)
   api_url = beer_settings.API_URL
   order = beer_settings.ORDER
   activation_strings = [

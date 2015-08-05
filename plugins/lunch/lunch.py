@@ -16,6 +16,7 @@ import plugins.plugin_base
 
 
 class Lunch(plugins.plugin_base.PluginBase):
+  self._safe_set_config_from_env(lunch_settings)
   api_url = lunch_settings.NYC_OPEN_DATA_API_URL
   categories = lunch_settings.CATEGORIES
   zipcode = lunch_settings.ZIP
