@@ -3,3 +3,4 @@
 *settings.py
 dependencies/*
 database/slackotron.db*
+locks/

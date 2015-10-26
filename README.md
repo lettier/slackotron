@@ -67,19 +67,21 @@ A channel can either be a Slack channel or direct-message (DM).
 A user has many channels and messages.
 A response has one message, user, and channel.
 
-### Threads
+### Thread
 
-The main Slackotron process (MSP) initializes a subscriber and
- publisher thread per Slack DM and channel.
-Subscriber threads pull in the latest raw Slack messages, generating Slackotron messages,
- for their channel.
-Upon message generation, a subscriber thread publishes a RabbitMQ (RMQ)
+The main Slackotron process (MSP) initializes the Channel User Manager
+ which starts a thread that in turn runs the channel subscribers and channel publishers.
+Channel subscribers pull in the latest raw Slack messages, generating
+ Slackotron messages, for their channel.
+Upon message generation, a channel subscriber publishes a RabbitMQ (RMQ)
  message to the Slackotron plugin exchange (SPE).
 This RMQ message contains the Slackotron message, channel, and user ID.
 Since the plugin exchange is fanout, all plugin queues receive the same RMQ message.
-Publisher threads query the DB for all approved unsent responses for their channel.
-Per approved unsent response, a publisher thread posts the response's text
+Channel publishers query the DB for all approved unsent responses for their channel.
+Per approved unsent response, a channel publisher posts the response's text
  to their Slack DM or channel and marks the response as sent.
+Channel subscribers and publishers are added or removed during runtime based on
+ the selections on the dashboard channels page.
 
 ### Plugins
 
@@ -95,8 +97,10 @@ The MSP dequeues these RMQ messages and generates responses.
 ### Security
 
 Slackotron employs a level of security per each of its channels.
-With security on, responses must be approved by the bot operator
- and each response's text is scrubbed of profanity.
+With security on, responses must be approved by the bot operator via
+ the dashboard.
+Each response's text is scrubbed of profanity if PROFANITY_FILTER_ON
+ is set to true in the settings.
 Within the dashboard, security per channel can be either turned off or on.
 
 ### Dashboard
@@ -112,18 +116,19 @@ The second page lists the responses awaiting approval.
 It is here that responses can be approved or deleted.
 The third page lists the Slackotron channels.
 It is here that the bot operator can either turn off or on a
- channel's security.
+ channel's security and/or subscribe to individual channels.
+The slackbot channel is subscribed by default.
 The fourth page allows the bot operator to post a message to a Slack
  DM or channel and user.
-Messages posted from the dashboard will contain the text "[OVERRIDE]"
+Messages posted from the dashboard will contain the text "\[ADMIN\]"
  in Slack.
 
 ### An Example
 
 Jane posts a message "Hello Slackotron!" to the Slack channel named general.
-The subscriber thread, for general, generates a message with ID 0.
+The channel subscriber, for general, generates a message with ID 0.
 Message, with ID 0, has user with ID 1 and channel with ID 2.
-The subscriber thread sends the RMQ message
+The channel subscriber sends the RMQ message
  "{channel_id: 2, user_id: 1, message_id: 0}" to the SPE.
 Plugin 0 dequeues and queries for message, user, and channel with ID 0,
  1, and 2 respectively.
@@ -137,32 +142,32 @@ Security is on for channel, with ID 2, so the response is marked not approved.
 The bot operator goes to http://localhost:55555/pending_responses/ and sees
  the awaiting response.
 The bot operator approves the response.
-The publisher thread queries for unsent approved responses for channel with ID 2.
+The channel publisher queries for unsent approved responses for channel with ID 2.
 Response, with ID 3, is returned.
-The publisher thread posts "@jane, Hello!" to the Slack channel named general
- and marks response, with ID 3, as sent.
+The channel publisher posts "@jane, Hello!" to the Slack channel named general
+ and marks the response, with ID 3, as sent.
 
 ## Dependencies
 
 * OS
-    * JDK 8
-    * Python2
-    * Redis
-    * RabbitMQ
-    * Stanford Parser version 3.4.1
-    * Stanford Named Entity Recognizer version 3.4
+  * JDK 8
+  * Python2
+  * Redis
+  * RabbitMQ
+  * Stanford Parser version 3.4.1
+  * Stanford Named Entity Recognizer version 3.4
 * Python
-    * BeautifulSoup
-    * Colorama
-    * Httplib2
-    * Flask
-    * NLTK
-    * Numpy
-    * Pattern
-    * Peewee
-    * Pika
-    * Redis
-    * Requests
+  * BeautifulSoup
+  * Colorama
+  * Httplib2
+  * Flask
+  * NLTK
+  * Numpy
+  * Pattern
+  * Peewee
+  * Pika
+  * Redis
+  * Requests
 
 _(C) 2015 David Lettier._  
 http://www.lettier.com/

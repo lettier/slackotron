@@ -19,11 +19,36 @@ class Base(peewee.Model):
     database = database.database_manager.DatabaseManager.database
 
   def __str__(self):
-    return '%s()' % (self.__class__.__name__)
+    strr = [u'(%s' % self._class_name()]
+    fields = self._fields()
+    if len(fields) > 0:
+      strr += [u'{']
+      class_dict = self.__class__.__dict__
+      for field in fields:
+        strr += [
+            u':%s %s' % (field, class_dict[field].__get__(self))
+        ]
+      strr += [u'})']
+    else:
+      strr += [u')']
+    return u' '.join(strr)
 
   @classmethod
   def database(cls):
     return cls._meta.database
+
+  @classmethod
+  def _class_name(cls):
+    return str(cls.__name__)
+
+  @classmethod
+  def _fields(cls):
+    d = cls.__dict__
+    fields = [
+        str(k) for k, v in d.items() if
+        'FieldDescriptor' in str(v) and k != 'id'
+    ]
+    return sorted(fields)
 
 
 class Channel(Base):
@@ -31,15 +56,7 @@ class Channel(Base):
   slack_id = peewee.CharField(unique=True)
   is_direct = peewee.BooleanField(default=False)
   is_secure = peewee.BooleanField(default=True)
-
-  def __str__(self):
-    return '%s(%s %s %s %s)' % (
-        self.__class__.__name__,
-        self.slack_name,
-        self.slack_id,
-        self.is_direct,
-        self.is_secure
-    )
+  is_subscribed = peewee.BooleanField(default=False)
 
   def users(self):
     users = User.select().join(
@@ -66,15 +83,6 @@ class Channel(Base):
 class User(Base):
   slack_name = peewee.CharField()
   slack_id = peewee.CharField(unique=True)
-  is_slackbot = peewee.BooleanField(default=False)
-
-  def __str__(self):
-    return '%s(%s %s %s)' % (
-        self.__class__.__name__,
-        self.slack_name,
-        self.slack_id,
-        self.is_slackbot
-    )
 
   def channels(self):
     channels = Channel.select().join(
@@ -91,16 +99,6 @@ class Message(Base):
   channel = peewee.ForeignKeyField(Channel, related_name='messages')
   user = peewee.ForeignKeyField(User, related_name='messages')
   is_deleted = peewee.BooleanField(default=False)
-
-  def __str__(self):
-    return '%s(%s %s %s %s %s)' % (
-        self.__class__.__name__,
-        self.text,
-        self.slack_timestamp,
-        self.channel,
-        self.user,
-        self.is_deleted
-    )
 
 
 class Response(Base):
@@ -122,21 +120,6 @@ class Response(Base):
   is_deleted = peewee.BooleanField(default=False)
   slack_timestamp = peewee.CharField(default='')
 
-  def __str__(self):
-    return '%s(%s %s %s %s %s %s %s %s %s %s)' % (
-        self.__class__.__name__,
-        self.text,
-        self.generated_at,
-        self.from_plugin,
-        self.in_response_to,
-        self.to_channel,
-        self.to_user,
-        self.is_approved,
-        self.is_sent,
-        self.is_deleted,
-        self.slack_timestamp
-    )
-
   def save(self, *args, **kwargs):
     if self.generated_at.__class__.__name__ == 'NoneType':
       self.generated_at = str('%.7f' % time.time())
@@ -150,12 +133,6 @@ class ChannelUserRelationship(Base):
 
   class Meta:
     indexes = ((('channel', 'user'), True),)
+
   channel = peewee.ForeignKeyField(Channel)
   user = peewee.ForeignKeyField(User)
-
-  def __str__(self):
-    return '%s(%s %s)' % (
-        self.__class__.__name__,
-        str(self.channel),
-        str(self.user)
-    )

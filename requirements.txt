@@ -15,7 +15,7 @@ MarkupSafe==0.23
 nltk==3.0.0
 numpy==1.9.1
 Pattern==2.6
-peewee==2.4.5
+peewee==2.6.4
 pexpect==3.3
 pika==0.9.14
 pysqlite==2.6.3
@@ -27,3 +27,4 @@ simplejson==3.6.5
 suds==0.4
 Unidecode==0.4.17
 Werkzeug==0.9.6
+wheel==0.24.0

@@ -9,7 +9,7 @@
       </h5>
     </footer>
     <script type='text/javascript'>
-      document.getElementById("year").innerHTML = new Date().getFullYear();
+      document.getElementById('year').innerHTML = new Date().getFullYear();
       var styleSheets = document.styleSheets;
       var localStyleSheet = null;
       for (var i = 0; i < styleSheets.length; ++i) {
@@ -23,10 +23,11 @@
         87 Table Headers
         15 Footer
       */
-      tableContentHeight = Math.floor(((window.innerHeight - 71 - 87 - 15) / window.innerHeight) * 100) - 2;
+      var tableContentHeight = Math.floor(((window.innerHeight - 71 - 87 - 15) / window.innerHeight) * 100) - 2;
+      var length = localStyleSheet.cssRules.length; // Firefox
       localStyleSheet.insertRule(
         '.table-content {overflow-y: auto; height: ' + tableContentHeight + 'vh;}',
-        localStyleSheet.rules.length
+        length
       );
     </script>
   </body>

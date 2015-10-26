@@ -18,10 +18,14 @@
           <select class='form-control' id='to_channel' title='To Channel'>
             <option></option>
             {% for direct_channel in direct_channels %}
-              <option channel_id='{{direct_channel.id}}'>{{direct_channel.direct_channel_user_name()}}</option>
+              {% if direct_channel.is_subscribed == true %}
+                <option channel_id='{{direct_channel.id}}'>{{direct_channel.direct_channel_user_name()}}</option>
+              {% endif %}
             {% endfor %}
             {% for channel in channels %}
-              <option channel_id='{{channel.id}}'>{{channel.slack_name}}</option>
+              {% if channel.is_subscribed == true %}
+                <option channel_id='{{channel.id}}'>{{channel.slack_name}}</option>
+              {% endif %}
             {% endfor %}
           </select>
         </div>
