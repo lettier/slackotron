@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>Slackotron</title>
-    <meta charset='utf-8'>
+    <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link href='http://fonts.googleapis.com/css?family=Roboto:500,100,300' rel='stylesheet' type='text/css'>
     <link rel='stylesheet' type='text/css' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.css'>
@@ -30,10 +30,10 @@
             {% else %}
               <li><a href='/pending_responses'>Pending Responses</a></li>
             {% endif %}
-            {% if active_page_name == 'channel_security' %}
-              <li class='active'><a href='/channel_security'>Channel Security</a></li>
+            {% if active_page_name == 'channels' %}
+              <li class='active'><a href='/channels'>Channels</a></li>
             {% else %}
-              <li><a href='/channel_security'>Channel Security</a></li>
+              <li><a href='/channels'>Channels</a></li>
             {% endif %}
             {% if active_page_name == 'post_a_message' %}
               <li class='active'><a href='/post_a_message'>Post a Message</a></li>

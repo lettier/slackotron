@@ -8,8 +8,9 @@
             <tr>
               <th class='col-md-1'>Slack Name</th>
               <th class='col-md-1'>Slack ID</th>
-              <th class='col-md-1'>Is Direct?</th>
-              <th class='col-md-1'>Is Secure?</th>
+              <th class='col-md-1'>Direct?</th>
+              <th class='col-md-1'>Secure?</th>
+              <th class='col-md-1'>Subscribed?</th>
             <tr>
           </thead>
         </table>
@@ -20,16 +21,54 @@
                 <tr>
                   <td class='col-md-1'>{{direct_channel.direct_channel_user_name()}}</td>
                   <td class='col-md-1'>{{direct_channel.slack_id}}</td>
-                  <td class='col-md-1'>{{direct_channel.is_direct}}</td>
-                  <td class='col-md-1'>{{direct_channel.is_secure}}</td>
+                  <td class='col-md-1'>
+                    {% if direct_channel.is_direct == true %}
+                      <i class='fa fa-circle'></i>
+                    {% else %}
+                      <i class='fa fa-circle-o'></i>
+                    {% endif %}
+                  </td>
+                  <td class='col-md-1'>
+                    {% if direct_channel.is_secure == true %}
+                      <i class='fa fa-circle'></i>
+                    {% else %}
+                      <i class='fa fa-circle-o'></i>
+                    {% endif %}
+                  </td>
+                  <td class='col-md-1'>
+                    {% if direct_channel.is_subscribed == true %}
+                      <i class='fa fa-circle'></i>
+                    {% else %}
+                      <i class='fa fa-circle-o'></i>
+                    {% endif %}
+                  </td>
                 </tr>
               {% endfor %}
               {% for channel in channels %}
                 <tr>
                   <td class='col-md-1'>{{channel.slack_name}}</td>
                   <td class='col-md-1'>{{channel.slack_id}}</td>
-                  <td class='col-md-1'>{{channel.is_direct}}</td>
-                  <td class='col-md-1'>{{channel.is_secure}}</td>
+                  <td class='col-md-1'>
+                    {% if channel.is_direct == true %}
+                      <i class='fa fa-circle'></i>
+                    {% else %}
+                      <i class='fa fa-circle-o'></i>
+                    {% endif %}
+                  </td>
+                  <td class='col-md-1'>
+                    {% if channel.is_secure == true %}
+                      <i class='fa fa-circle'></i>
+                    {% else %}
+                      <i class='fa fa-circle-o'></i>
+                    {% endif %}
+                  </td>
+                  <td class='col-md-1'>
+                    {% if channel.is_subscribed == true %}
+                      <i class='fa fa-circle'></i>
+                    {% else %}
+                      <i class='fa fa-circle-o'></i>
+                    {% endif %}
+                  </td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -43,7 +82,6 @@
             <tr>
               <th>Slack Name</th>
               <th>Slack ID</th>
-              <th>Is Slackbot?</th>
             <tr>
           </thead>
         </table>
@@ -54,7 +92,6 @@
                 <tr>
                   <td>{{user.slack_name}}</td>
                   <td>{{user.slack_id}}</td>
-                  <td>{{user.is_slackbot}}</td>
                 </tr>
               {% endfor %}
             </tbody>

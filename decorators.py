@@ -96,11 +96,15 @@ def rabbitmq_publish(**_kwargs):
         )
       return_value = func(self, *args, **kwargs)
       bodies = []
-      if return_value.__class__.__name__ != 'list':
+      if return_value is None:
+        pass
+      elif return_value.__class__.__name__ != 'list':
         bodies.append(return_value)
       else:
         bodies = return_value
       for body in bodies:
+        if body is None:
+          continue
         try:
           basic_publish_ok = channel.basic_publish(
               exchange=_kwargs['exchange'],

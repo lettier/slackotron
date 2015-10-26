@@ -50,17 +50,14 @@ class PluginBase(Scribe, object):
 
   def __create_slackotron_user(self):
     try:
-      is_slackbot = False
       self.slackotron_user = models.User.get(
           models.User.slack_name == self.bot_name,
-          models.User.slack_id == self.bot_slack_id,
-          models.User.is_slackbot == is_slackbot
+          models.User.slack_id == self.bot_slack_id
       )
     except models.User.DoesNotExist:
       self.slackotron_user = models.User.create(
           slack_name=self.bot_name,
-          slack_id=self.bot_slack_id,
-          is_slackbot=False
+          slack_id=self.bot_slack_id
       )
     except Exception as e:
       self.error(e)

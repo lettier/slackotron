@@ -18,7 +18,7 @@ from scribe import Scribe
 class PluginManager(Scribe, object):
   plugins = []
 
-  def start_plugins(self):
+  def start(self):
     cwd = os.path.dirname(os.path.realpath(__file__))
     sys.path.insert(0, cwd + '/')
     env = os.environ.copy()
@@ -47,7 +47,7 @@ class PluginManager(Scribe, object):
           )
       )
 
-  def stop_plugins(self):
+  def stop(self):
     self.info('Stopping plugins.')
     for plugin in self.plugins:
       plugin.kill()

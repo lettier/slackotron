@@ -1,0 +1,119 @@
+{% include 'header.html' %}
+  <div class='container-fluid'>
+    <div class='row'>
+      <div class='col-md-12'>
+        <table class='table table-condensed'>
+          <caption>Channels ({{channel_count}})</caption>
+          <thead>
+            <tr>
+              <th class='col-sm-1'>Slack Name</th>
+              <th class='col-sm-1'>Slack ID</th>
+              <th class='col-sm-1'>Direct?</th>
+              <th class='col-sm-1'>Secure?</th>
+              <th class='col-sm-1'>Subscribed?</th>
+            <tr>
+          </thead>
+        </table>
+        <div class='table-content'>
+          <table class='table table-condensed table-hover'>
+            <tbody>
+              {% for direct_channel in direct_channels %}
+                <tr>
+                  <td class='col-sm-1'>{{direct_channel.direct_channel_user_name()}}</td>
+                  <td class='col-sm-1'>{{direct_channel.slack_id}}</td>
+                  <td class='col-sm-1'>{{direct_channel.is_direct}}</td>
+                  <td class='col-sm-1' channelId='{{direct_channel.id}}' channelProperty='is_secure' onclick='toggle(this, "fa-toggle-on");'>
+                    {% if direct_channel.is_secure == true %}
+                      <i class='pointer fa fa-2x fa-toggle-on'></i>
+                    {% else %}
+                      <i class='pointer fa fa-2x fa-toggle-off'></i>
+                    {% endif %}
+                  </td>
+                  <td class='col-sm-1' channelId='{{direct_channel.id}}' channelProperty='is_subscribed' onclick='toggle(this, "fa-toggle-off");'>
+                    {% if direct_channel.is_subscribed == true %}
+                      <i class='pointer fa fa-2x fa-toggle-on'></i>
+                    {% else %}
+                      <i class='pointer fa fa-2x fa-toggle-off'></i>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+              {% for channel in channels %}
+                <tr>
+                  <td class='col-sm-1'>{{channel.slack_name}}</td>
+                  <td class='col-sm-1'>{{channel.slack_id}}</td>
+                  <td class='col-sm-1'>{{channel.is_direct}}</td>
+                  <td class='col-sm-1' channelId='{{channel.id}}' channelProperty='is_secure' onclick='toggle(this, "fa-toggle-on");'>
+                    {% if channel.is_secure == true %}
+                      <i class='pointer fa fa-2x fa-toggle-on'></i>
+                    {% else %}
+                      <i class='pointer fa fa-2x fa-toggle-off'></i>
+                    {% endif %}
+                  </td>
+                  <td class='col-sm-1' channelId='{{channel.id}}' channelProperty='is_subscribed' onclick='toggle(this, "fa-toggle-off");'>
+                    {% if channel.is_subscribed == true %}
+                      <i class='pointer fa fa-2x fa-toggle-on'></i>
+                    {% else %}
+                      <i class='pointer fa fa-2x fa-toggle-off'></i>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type='text/javascript'>
+    function toggle(element, alertWhen) {
+      var classsOn = 'fa-toggle-on';
+      var classsOff = 'fa-toggle-off';
+      var channelId = element.getAttribute('channelId');
+      var channelProperty = element.getAttribute('channelProperty');
+      var icon = element.children[0]
+      var classs = icon.classList[3];
+      if (classs === 'fa-toggle-off') {
+        var channelPropertyValue = true;
+      } else {
+        var channelPropertyValue = false;
+      }
+      if (classs === alertWhen) {
+        var alertt = true;
+      } else {
+        var alertt = false;
+      }
+      function apiCall() {
+        var payload = {};
+        payload[channelProperty] = channelPropertyValue;
+        promise.put(
+          '/channels/' + channelId,
+          JSON.stringify(payload),
+          {'Content-type': 'application/json'}
+        ).then( function(error, text, xhr) {
+          if (error) {
+            alert('Error!\n' + xhr.status);
+          }
+          else {
+            json = JSON.parse(text);
+            channelPropertyValue = json.channel[channelProperty];
+            if (channelPropertyValue === true) {
+              var className = classsOn;
+            } else {
+              var className = classsOff;
+            }
+            var fullClassName = 'pointer fa fa-2x ' + className;
+            icon.className = fullClassName;
+          }
+        })
+      }
+      if (alertt) {
+        if (confirm('Are you sure?')) {
+          apiCall()
+        }
+      } else {
+        apiCall()
+      }
+    }
+  </script>
+{% include 'footer.html' %}

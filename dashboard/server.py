@@ -11,17 +11,34 @@
 
 import os
 module_path = os.path.dirname(os.path.abspath(__file__))
-import sys
+import sys  # noqa
 sys.path.insert(0, module_path.split('/dashboard')[0])
-import slackotron_settings
-import models
-from flask import Flask
-from flask import render_template
-from flask import jsonify
-from flask import request
+import slackotron_settings  # noqa
+import models  # noqa
+from flask import Flask  # noqa
+from flask import render_template  # noqa
+from flask import jsonify  # noqa
+from flask import request  # noqa
 
 application = Flask(__name__)
 application.config.from_object(__name__)
+
+'''
+  HOOKS
+'''
+
+
+@application.before_request
+def _db_connect():
+  models.Base.database().connect()
+
+
+@application.teardown_request
+def _db_close(exc):
+  database = models.Base.database()
+  if not database.is_closed():
+    database.close()
+
 
 '''
   PAGES
@@ -30,16 +47,16 @@ application.config.from_object(__name__)
 
 @application.route('/')
 def index():
-  _direct_channels = direct_channels()
-  _channels = channels()
-  _users = users()
+  direct_channels = get_direct_channels()
+  channels = get_channels()
+  users = get_users()
   return render_template(
       'index.html',
-      direct_channels=_direct_channels,
-      channels=_channels,
-      channel_count=total_channel_count(_direct_channels, _channels),
-      users=_users,
-      user_count=user_count(_users),
+      direct_channels=direct_channels,
+      channels=channels,
+      channel_count=total_channel_count(direct_channels, channels),
+      users=users,
+      user_count=user_count(users),
       active_page_name='/'
   )
 
@@ -65,30 +82,30 @@ def pending_responses():
   )
 
 
-@application.route('/channel_security')
-def channel_security():
-  _direct_channels = direct_channels()
-  _channels = channels()
+@application.route('/channels')
+def channels():
+  direct_channels = get_direct_channels()
+  channels = get_channels()
   return render_template(
-      'channel_security.html',
-      direct_channels=_direct_channels,
-      channels=_channels,
-      channel_count=total_channel_count(_direct_channels, _channels),
-      active_page_name='channel_security'
+      'channels.html',
+      direct_channels=direct_channels,
+      channels=channels,
+      channel_count=total_channel_count(direct_channels, channels),
+      active_page_name='channels'
   )
 
 
 @application.route('/post_a_message')
 def post_a_message():
-  _direct_channels = direct_channels()
-  _channels = channels()
-  _users = users()
+  direct_channels = get_direct_channels()
+  channels = get_channels()
+  users = get_users()
   return render_template(
       'post_a_message.html',
-      direct_channels=_direct_channels,
-      channels=_channels,
-      channel_count=total_channel_count(_direct_channels, _channels),
-      users=_users,
+      direct_channels=direct_channels,
+      channels=channels,
+      channel_count=total_channel_count(direct_channels, channels),
+      users=users,
       active_page_name='post_a_message'
   )
 
@@ -111,6 +128,8 @@ def create_response():
     channel = models.Channel.get(
         models.Channel.id == params['to_channel_id']
     )
+    if channel.is_subscribed is False:
+      return jsonify(success=False, message='Not subscribed to channel.'), 400
   except:
     return jsonify(success=False, message='Channel not found.'), 400
   try:
@@ -123,7 +142,7 @@ def create_response():
     return jsonify(success=False, message='Text parameter required.'), 400
   if params['text'] is None or params['text'] == '':
     return jsonify(success=False, message='Text parameter was blank.'), 400
-  text = u'[OVERRIDE] ' + params['text']
+  text = u'[ADMIN] ' + params['text']
   response = models.Response.create(
       text=text,
       to_channel=channel,
@@ -131,8 +150,7 @@ def create_response():
       is_approved=True,
       is_sent=False
   )
-  response.save()
-  return jsonify(success=True, message='', response=response._data)
+  return jsonify(success=True, message='Created.', response=response._data)
 
 
 @application.route(
@@ -152,7 +170,11 @@ def approve_pending_response(pending_response_id):
       response.save()
   except models.Response.DoesNotExist as e:
     return jsonify(success=False, message=str(e)), 404
-  return jsonify(success=True, message='', pending_response=response._data)
+  return jsonify(
+      success=True,
+      message='Updated.',
+      pending_response=response._data
+  )
 
 
 @application.route(
@@ -168,7 +190,11 @@ def delete_pending_response(pending_response_id):
     response.save()
   except models.Response.DoesNotExist as e:
     return jsonify(success=False, message=str(e)), 404
-  return '', 200
+  return jsonify(
+      success=True,
+      message='Deleted.',
+      pending_response=response._data
+  )
 
 
 @application.route(
@@ -186,17 +212,20 @@ def update_channel_security(channel_id):
     if 'is_secure' in params:
       channel.is_secure = params['is_secure']
       channel.save()
+    elif 'is_subscribed' in params:
+      channel.is_subscribed = params['is_subscribed']
+      channel.save()
   except models.Channel.DoesNotExist as e:
     return jsonify(success=False, message=str(e)), 404
-  return jsonify(success=True, message='', channel=channel._data)
+  return jsonify(success=True, message='Updated.', channel=channel._data)
 
 '''
   HELPER METHODS
 '''
 
 
-def direct_channels():
-  _direct_channels = []
+def get_direct_channels():
+  direct_channels = []
   is_direct = True
   for direct_channel in models.Channel.select().where(
       models.Channel.is_direct == is_direct
@@ -204,35 +233,35 @@ def direct_channels():
       models.Channel.slack_name
   ):
     if direct_channel.direct_channel_user_name() != '':
-      _direct_channels.append(direct_channel)
-  return _direct_channels
+      direct_channels.append(direct_channel)
+  return direct_channels
 
 
-def channels():
-  _channels = []
+def get_channels():
+  channels = []
   is_direct = False
   for channel in models.Channel.select().where(
       models.Channel.is_direct == is_direct
   ).order_by(
       models.Channel.slack_name
   ):
-    _channels.append(channel)
-  return _channels
+    channels.append(channel)
+  return channels
 
 
 def total_channel_count(direct_channels, channels):
   return len(direct_channels) + len(channels)
 
 
-def users():
-  _users = []
+def get_users():
+  users = []
   for user in models.User.select().order_by(
       models.User.slack_name
   ):
     if user.slack_id == slackotron_settings.BOT_SLACK_ID:
       continue
-    _users.append(user)
-  return _users
+    users.append(user)
+  return users
 
 
 def user_count(users):

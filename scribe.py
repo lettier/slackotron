@@ -15,7 +15,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-class Scribe(object):
+class Scribe:
   logger = logger
 
   def debug(self, message):

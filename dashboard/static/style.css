@@ -17,3 +17,6 @@ h5.copyright {
   float: right;
   margin-right: 10px;
 }
+.pointer {
+  cursor: pointer;
+}

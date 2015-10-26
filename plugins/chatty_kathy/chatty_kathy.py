@@ -37,12 +37,14 @@ class ChattyKathy(plugins.plugin_base.PluginBase):
     if noun_phrases is None:
       return None
     if len(noun_phrases) > 0:
+      self.info('Noun phrases %s.' % noun_phrases)
       noun_phrase = max(noun_phrases, key=len)
       try:
         noun_phrase = sp.untokenize(noun_phrase, message.text)
       except OSError:
         return None
       if noun_phrase is not None:
+        self.info('Noun phrase %s.' % noun_phrase)
         redis_key = self._redis_key(noun_phrase)
         redis_set_member = self.redis_client.srandmember(redis_key)
         if redis_set_member is not None:

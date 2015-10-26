@@ -16,18 +16,18 @@ import logging
 import json
 import slackotron_settings
 import slack_service
-import thread_manager
-import plugins.plugin_manager
-import database.database_manager
-import dashboard.dashboard_manager
 import decorators
 from scribe import Scribe
+from locker import Locker
 from models import Base
 from models import Channel
 from models import User
 from models import Message
 from models import Response
-from models import ChannelUserRelationship
+from database.database_manager import DatabaseManager
+from plugins.plugin_manager import PluginManager
+from channel_user_manager import ChannelUserManager
+from dashboard.dashboard_manager import DashboardManager
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -37,83 +37,51 @@ class Slackotron(Scribe, object):
   bot_icon_url = slackotron_settings.BOT_ICON_URL
   bot_icon_emoji = slackotron_settings.BOT_ICON_EMOJI
   bot_slack_id = slackotron_settings.BOT_SLACK_ID
-  profanity_filter_on = slackotron_settings.PROFANITY_FILTER_ON
+  try:
+    profanity_filter_on = slackotron_settings.PROFANITY_FILTER_ON
+    if profanity_filter_on is not False or profanity_filter_on is not True:
+      profanity_filter_on = True
+  except:
+    profanity_filter_on = True
+  database_manager = DatabaseManager()
+  locker = Locker()
   slack = slack_service.Slack()
-  dashboard_manager = dashboard.dashboard_manager.DashboardManager()
-  plugin_manager = plugins.plugin_manager.PluginManager()
-  thread_manager = thread_manager.SlackotronThreadManager()
-  database_manager = database.database_manager.DatabaseManager()
+  channel_user_manager = ChannelUserManager(
+      **{
+          'database_manager': database_manager,
+          'slack': slack,
+          'profanity_filter_on': profanity_filter_on,
+          'bot_name': bot_name,
+          'bot_slack_id': bot_slack_id,
+          'bot_icon_emoji': bot_icon_emoji,
+          'bot_icon_url': bot_icon_url
+      }
+  )
+  plugin_manager = PluginManager()
+  dashboard_manager = DashboardManager()
 
   def __init__(self):
-    self.info('Slackotron Bot Name:')
-    self.info(self.bot_name)
+    self.info('Slackotron Bot Name: %s' % self.bot_name)
+
+  def start(self):
     if not self.slack.api_valid() or not self.slack.auth_valid():
       self.critical('API and/or auth not valid! Exiting.')
       sys.exit()
+    self.database_manager.connect()
+    self.database_manager.create_tables(Base)
+    self.channel_user_manager.start()
+    self.plugin_manager.start()
+    self.dashboard_manager.start_dashboard()
+    self._run()
 
-  def _initialize_channels_and_users(self):
-    self.info('Loading channels and users...')
-    channel_id_to_name_map, channel_name_to_id_map = \
-        self.slack.channel_id_name_maps()
-    with self.database_manager.transaction():
-      for k, v in channel_id_to_name_map.items():
-        is_direct = True if k.startswith('D0') else False
-        try:
-          channel = Channel.get(
-              Channel.slack_id == k
-          )
-          channel.slack_name = v
-          channel.is_direct = is_direct
-          channel.save()
-        except Channel.DoesNotExist:
-          channel = Channel.create(
-              slack_name=v,
-              slack_id=k,
-              is_direct=is_direct
-          )
-        except Exception as e:
-          self.error(e)
-        channel_members = self.slack.channel_members(channel.slack_name)
-        for channel_member in channel_members:
-          is_slackbot = True if channel_member[1] == 'USLACKBOT' else False
-          try:
-            user = User.get(
-                User.slack_name == channel_member[1],
-                User.slack_id == channel_member[0],
-                User.is_slackbot == is_slackbot
-            )
-          except User.DoesNotExist:
-            user = User.create(
-                slack_name=channel_member[1],
-                slack_id=channel_member[0],
-                is_slackbot=is_slackbot
-            )
-          except Exception as e:
-            self.error(e)
-          try:
-            ChannelUserRelationship.create(
-                channel=channel,
-                user=user
-            )
-          except:
-            pass
-
-  def _create_slackotron_user(self):
-    try:
-      is_slackbot = False
-      self.slackotron_user = User.get(
-          User.slack_name == self.bot_name,
-          User.slack_id == self.bot_slack_id,
-          User.is_slackbot == is_slackbot
-      )
-    except User.DoesNotExist:
-      self.slackotron_user = User.create(
-          slack_name=self.bot_name,
-          slack_id=self.bot_slack_id,
-          is_slackbot=False
-      )
-    except Exception as e:
-      self.error(e)
+  def stop(self):
+    self.locker.unlock_all()
+    self.dashboard_manager.stop_dashboard()
+    self.plugin_manager.stop()
+    self.channel_user_manager.stop()
+    self.database_manager.disconnect()
+    time.sleep(5)
+    self.info(self.__class__.__name__ + ' is closing.')
 
   @decorators.rabbitmq_subscribe(
       host=slackotron_settings.RABBITMQ_HOST_URL,
@@ -131,22 +99,30 @@ class Slackotron(Scribe, object):
       channel, user, message, plugin_name, plugin_response = \
           self._process_rmq_message(rmq_message)
       if channel is not None:
-        if user is not None:
-          if message is not None:
-            if plugin_name is not None:
-              if plugin_response is not None:
-                is_approved = True if channel.is_secure is False \
-                    else False
-                response = Response(
-                    text=plugin_response,
-                    from_plugin=plugin_name,
-                    in_response_to=message,
-                    to_channel=channel,
-                    to_user=user,
-                    is_approved=is_approved,
-                    is_sent=False,
-                )
-                response.save()
+        if channel.is_subscribed is True:
+          if user is not None:
+            if message is not None:
+              if plugin_name is not None:
+                if plugin_response is not None:
+                  is_approved = True if channel.is_secure is False \
+                      else False
+                  response = Response(
+                      text=plugin_response,
+                      from_plugin=plugin_name,
+                      in_response_to=message,
+                      to_channel=channel,
+                      to_user=user,
+                      is_approved=is_approved,
+                      is_sent=False,
+                  )
+                  g = self.locker.make_lock_generator('response')
+                  try:
+                    g.next()
+                    response.save()
+                  except Exception as e:
+                    self.error(e)
+                  finally:
+                    g.next()
 
   def _process_rmq_message(self, rmq_message):
     try:
@@ -167,7 +143,7 @@ class Slackotron(Scribe, object):
       self.error(e)
       return None, None, None, None, None
 
-  def run(self):
+  def _run(self):
     while True:
       try:
         self._on_rmq_message()
@@ -176,30 +152,6 @@ class Slackotron(Scribe, object):
         self.error(e)
         traceback.print_exc()
         continue
-
-  def start(self):
-    self.database_manager.connect()
-    self.database_manager.create_tables(Base)
-    self._initialize_channels_and_users()
-    self._create_slackotron_user()
-    self.info('Users:')
-    for user in User.select():
-      self.info(user)
-    self.info('Channels:')
-    for channel in Channel.select():
-      self.info(channel)
-    self.plugin_manager.start_plugins()
-    self.thread_manager.start_threads()
-    self.dashboard_manager.start_dashboard()
-    self.run()
-
-  def stop(self):
-    self.dashboard_manager.stop_dashboard()
-    self.thread_manager.stop_threads()
-    self.plugin_manager.stop_plugins()
-    self.database_manager.disconnect()
-    time.sleep(5)
-    self.info(self.__class__.__name__ + ' is closing.')
 
 if __name__ == '__main__' and __package__ is None:
   slackotron = Slackotron()

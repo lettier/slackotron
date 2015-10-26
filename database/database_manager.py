@@ -12,19 +12,23 @@
 import os
 import playhouse.berkeleydb
 
-BASE_DIR = os.path.dirname(__file__)
+module_path = os.path.dirname(os.path.abspath(__file__))
 
 
 class DatabaseManager(object):
   database = playhouse.berkeleydb.BerkeleyDatabase(
-      BASE_DIR + '/' + 'slackotron.db',
+      os.path.normpath(
+          module_path + '/' + 'slackotron.db',
+      ),
       threadlocals=True,
-      timeout=600.0
+      pragmas=(
+          ('journal_mode', 'WAL'),
+          ('busy_timeout', 10000)
+      )
   )
 
   def connect(self):
     self.database.connect()
-    self.database.execute_sql('PRAGMA journal_mode=WAL;')
 
   def disconnect(self):
     self.database.close()

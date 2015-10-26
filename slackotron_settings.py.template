@@ -167,7 +167,7 @@ BOT_SLACK_ID = str(BOT_SLACK_ID)
 '''
   PROFANITY_FILTER_ON
 
-  If set to True, every plugin reponse will be filtered for profanity.
+  If set to True, every reponse will be filtered for profanity.
 '''
 
 PROFANITY_FILTER_ON = True
