@@ -34,9 +34,9 @@ touch my_plugin_settings.py
 ```python
 #!/usr/bin/env python
 
-import
 import plugins.plugin_base
 import my_plugin_settings
+
 
 # Make sure your plugin name matches its snake case directory name.
 # my_plugin => MyPlugin

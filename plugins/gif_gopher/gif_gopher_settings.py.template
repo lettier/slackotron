@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+'''
+  DAVID LETTIER
+  (C) 2015.
+
+  http://www.lettier.com/
+
+  Slackotron
+'''
+
+'''
+  API_ENDPOINT
+'''
+
+API_ENDPOINT = 'https://giphy.com/search/'

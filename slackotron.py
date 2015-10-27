@@ -76,9 +76,9 @@ class Slackotron(Scribe, object):
 
   def stop(self):
     self.locker.unlock_all()
-    self.dashboard_manager.stop_dashboard()
     self.plugin_manager.stop()
     self.channel_user_manager.stop()
+    self.dashboard_manager.stop_dashboard()
     self.database_manager.disconnect()
     time.sleep(5)
     self.info(self.__class__.__name__ + ' is closing.')

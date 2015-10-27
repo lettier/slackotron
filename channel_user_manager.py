@@ -39,7 +39,7 @@ class ChannelUserManager(Scribe, object):
     self.thread.start()
 
   def stop(self):
-    self.thread.stop_thread = True
+    self.thread.exit = True
 
   def _initialize_channels_and_users(self):
     self.info('Loading channels and users...')
