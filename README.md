@@ -1,8 +1,17 @@
-![Slackotron](http://i.imgur.com/uVWzEMJ.png)
+![Slackotron](docs/img/logo.png)
 
 # Slackotron
 
-A [Slack](https://www.slack.com/) bot customizable via plugins.
+A [Slack](https://www.slack.com/) bot extendable via plugins.
+
+## Screenshots
+
+![](http://i.imgur.com/w6YAs7T.png)  
+![](http://i.imgur.com/BsrBCPZ.jpg)  
+![](http://i.imgur.com/hgBarlS.png)  
+![](http://i.imgur.com/YQ4mcrH.jpg)  
+![](http://i.imgur.com/LMgs9r9.png)  
+![](http://i.imgur.com/FYkKKwX.png)  
 
 ## Quick Start
 
@@ -11,7 +20,7 @@ A [Slack](https://www.slack.com/) bot customizable via plugins.
 # Install JDK 8.
 # Install and run Redis.
 # Install and run RabbitMQ.
-# Download the Stanford Parser and NER.
+# Download the Stanford Parser and NER (see dependencies below).
 python2_location=$(which python2) # Arch Linux
 python2_location=$(which python) # Ubuntu or Mac OSX
 virtualenv --no-site-packages --python=$python2_location --always-copy \
@@ -28,11 +37,11 @@ cd ../lib/python2.7/site-packages/playhouse/
 ./berkeley_build.sh
 cd ../../../../slackotron/
 # Create the Slackotron settings file.
-cp slackotron_settings.py.template slackotron_settings.py
+cp src/slackotron_settings.py.template src/slackotron_settings.py
 # Fill in your specific settings.
 # Look for:
 #   - Slack API Token
-#   - Bot Name
+#   - Bot Slack Name
 #   - Bot Icon URL
 #   - Bot Emoji
 #   - Java Home Location
@@ -42,16 +51,18 @@ cp slackotron_settings.py.template slackotron_settings.py
 #   - Stanford Parser Models Location
 #   - Stanford NER Location
 #   - Stanford NER Classifier Location
-cd plugins/
+cd src/plugins/
 # For each plugin in plugins.
   cd plugin_name/
   # Create the plugin settings file.
   cp plugin_name_settngs.py.template plugin_name_settings.py
   # Fill in your specific settings.
 cd ../../
-python slackotron.py
+python src/slackotron.py
 # Point your browser to http://localhost:55555/
 # to use the dashboard.
+# Visit http://localhost:55555/channels to subscribe
+# to the channels you wish.
 ```
 
 ## Architecture Overview
@@ -67,21 +78,26 @@ A channel can either be a Slack channel or direct-message (DM).
 A user has many channels and messages.
 A response has one message, user, and channel.
 
-### Thread
+### Threads
 
 The main Slackotron process (MSP) initializes the Channel User Manager
- which starts a thread that in turn runs the channel subscribers and channel publishers.
+ which starts a thread that in turn runs the channel subscribers and publishers.
 Channel subscribers pull in the latest raw Slack messages, generating
  Slackotron messages, for their channel.
 Upon message generation, a channel subscriber publishes a RabbitMQ (RMQ)
- message to the Slackotron plugin exchange (SPE).
+ message to the Slackotron plugins exchange (SPE).
 This RMQ message contains the Slackotron message, channel, and user ID.
-Since the plugin exchange is fanout, all plugin queues receive the same RMQ message.
+Since the plugins exchange is fanout, all plugin queues receive the same RMQ message.
 Channel publishers query the DB for all approved unsent responses for their channel.
 Per approved unsent response, a channel publisher posts the response's text
  to their Slack DM or channel and marks the response as sent.
 Channel subscribers and publishers are added or removed during runtime based on
  the selections on the dashboard channels page.
+
+In addition to the channel subscribers/publishers thread, the Plugin Manager
+ initializes a thread which turns plugin responses from RabbitMQ into persisted
+ responses stored in the DB.
+These responses will be picked up by the channel subscribers/publishers thread.
 
 ### Plugins
 
@@ -150,12 +166,12 @@ The channel publisher posts "@jane, Hello!" to the Slack channel named general
 ## Dependencies
 
 * OS
-  * JDK 8
-  * Python2
-  * Redis
-  * RabbitMQ
-  * Stanford Parser version 3.4.1
-  * Stanford Named Entity Recognizer version 3.4
+  * [JDK 8](http://openjdk.java.net/install/)
+  * [Python2](https://www.python.org/downloads/)
+  * [Redis](http://redis.io/download)
+  * [RabbitMQ](https://www.rabbitmq.com/download.html)
+  * [Stanford Parser version 3.4.1](http://nlp.stanford.edu/software/lex-parser.shtml)
+  * [Stanford Named Entity Recognizer version 3.4](http://nlp.stanford.edu/software/CRF-NER.shtml)
 * Python
   * BeautifulSoup
   * Colorama

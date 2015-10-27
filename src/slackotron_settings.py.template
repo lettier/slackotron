@@ -1,0 +1,183 @@
+#!/usr/bin/env python
+
+'''
+  DAVID LETTIER
+  (C) 2016.
+
+  http://www.lettier.com/
+
+  Slackotron
+'''
+
+'''
+  SLACK_API_URL
+
+  The Slack API endpoint.
+'''
+
+SLACK_API_URL = 'https://slack.com/api/'
+
+'''
+  SLACK_API_TOKEN
+
+  Your Slack API token.
+'''
+
+SLACK_API_TOKEN = 'your-slack-api-token'
+
+'''
+  BOT_SLACK_ID
+
+  An ID interally used to track your bot to/from Slack.
+  Use a value < 0.
+'''
+
+BOT_SLACK_ID = -1
+BOT_SLACK_ID = str(BOT_SLACK_ID)
+
+'''
+  BOT_SLACK_NAME
+
+  The name of your bot to be displayed in Slack.
+'''
+
+BOT_SLACK_NAME = 'Your Bot Name'
+
+'''
+  BOT_ICON_URL
+
+  A link to an icon image that will be displayed next to your bot's messages.
+'''
+
+BOT_ICON_URL = 'http://your.bot_url.com/image.png'
+
+'''
+  BOT_ICON_EMOJI
+
+  Set it to an emoji available in Slack.
+  It can be either a default emoji or a custom team emoji.
+  Comment or remove this setting to use the BOT_ICON_URL as
+  this setting overrides BOT_ICON_URL.
+'''
+
+BOT_ICON_EMOJI = ':your_bot_emoji:'
+
+
+'''
+  PROFANITY_FILTER_ON
+
+  If set to True, every response will be filtered for profanity.
+'''
+
+PROFANITY_FILTER_ON = True
+
+'''
+  IGNORE_URLS
+
+  If True, Slackotron will ignore any message that contains a URL.
+'''
+
+IGNORE_URLS = True
+
+'''
+  IGNORE_MESSAGE_TYPES
+
+  Types of messages that Slackotron will ignore.
+  Currently set to ignore all non-human and non-file messages.
+'''
+
+IGNORE_MESSAGE_TYPES = [
+    'bot_message',
+    'file_share',
+    'file_comment',
+    'channel_join',
+    'channel_leave',
+    'channel_topic',
+    'channel_purpose',
+    'channel_archive',
+    'channel_unarchive',
+    'message_deleted'
+]
+
+'''
+  IGNORE_BOTS
+
+  If True, Slackotron will ignore all bot messages posted.
+'''
+
+IGNORE_BOTS = True
+
+'''
+  DASHBOARD_PORT
+
+  The port to access the dashboard.
+'''
+
+DASHBOARD_PORT = 55555
+
+'''
+  DASHBOARD_DEBUG
+
+  Run the Flask app in debug mode.
+'''
+
+DASHBOARD_DEBUG = False
+
+'''
+  REDIS_HOST
+
+  The host address to the awaiting redis-server.
+'''
+
+REDIS_HOST = 'localhost'
+
+'''
+  REDIS_PORT
+
+  The port number that the awaiting redis-server is listening on.
+'''
+
+REDIS_PORT = 6379
+
+'''
+  RABBITMQ_HOST_URL
+'''
+
+RABBITMQ_HOST_URL = 'localhost'
+
+'''
+  JAVA_HOME
+'''
+
+JAVA_HOME = '/usr/bin/java'
+
+'''
+  STANFORD_PARSER_LOCATION
+
+  http://nlp.stanford.edu/software/lex-parser.shtml
+'''
+
+STANFORD_PARSER_LOCATION = '/stanford/parser/location/stanford-parser.jar'
+
+'''
+  STANFORD_PARSER_MODELS_LOCATION
+'''
+
+STANFORD_PARSER_MODELS_LOCATION = \
+    '/stanford/parser/location/stanford-parser-models.jar'
+
+'''
+  STANFORD_NER_LOCATION
+
+  http://nlp.stanford.edu/software/CRF-NER.shtml
+'''
+
+STANFORD_NER_LOCATION = \
+    '/stanford/ner/location/stanford-ner.jar'
+
+'''
+  STANFORD_NER_CLASSIFIER_LOCATION
+'''
+
+STANFORD_NER_CLASSIFIER_LOCATION = \
+    '/stanford/ner/classifier/location/classifier.crf.ser.gz'

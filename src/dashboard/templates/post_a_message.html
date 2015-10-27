@@ -1,0 +1,90 @@
+{% include 'header.html' %}
+  <div class='container'>
+    <form class='form-horizontal' role='form'>
+      <div class='form-group'>
+        <label class='control-label col-sm-2' for='to_user'>To User:</label>
+        <div class='col-sm-10'>
+          <select class='form-control' id='to_user' title='To User'>
+            <option></option>
+            {% for user in users %}
+              <option user_id='{{user.id}}'>{{user.slack_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class='form-group'>
+        <label class='control-label col-sm-2' for='to_channel'>To Channel:</label>
+        <div class='col-sm-10'>
+          <select class='form-control' id='to_channel' title='To Channel'>
+            <option></option>
+            {% for direct_channel in direct_channels %}
+              {% if direct_channel.is_subscribed == true %}
+                <option channel_id='{{direct_channel.id}}'>{{direct_channel.direct_channel_user_name()}}</option>
+              {% endif %}
+            {% endfor %}
+            {% for channel in channels %}
+              {% if channel.is_subscribed == true %}
+                <option channel_id='{{channel.id}}'>{{channel.slack_name}}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class='form-group'>
+        <label class='control-label col-sm-2' for='text'>Text:</label>
+        <div class='col-sm-10'>
+          <input type='text' class='form-control' id='text' title='Text' placeholder='Text will show up with [ADMIN] in front like this: @user, [ADMIN] Your text.'>
+        </div>
+      </div>
+      <div class='form-group'>
+        <div class='row'>
+          <span class='col-sm-3'></span>
+          <div class='col-sm-9'>
+            <input type='button' class='col-sm-10 btn btn-danger red-background' id='send' value='Send' onclick='send_form(this);'>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <script type='text/javascript'>
+    function send_form(button) {
+      var to_user_element = document.getElementById('to_user');
+      var to_user_selected_index = to_user_element.selectedIndex;
+      var to_user_id = to_user_element.options[to_user_selected_index].getAttribute('user_id');
+      var to_channel_element = document.getElementById('to_channel');
+      var to_channel_selected_index = to_channel_element.selectedIndex;
+      var to_channel_id = to_channel.options[to_channel_selected_index].getAttribute('channel_id');
+      var text = document.getElementById('text').value;
+      if (to_user_id != null && to_channel_id != null && text != '') {
+        if (confirm('Are you sure?')) {
+          promise.post(
+            '/responses',
+            JSON.stringify(
+              {
+                'to_channel_id': to_channel_id,
+                'to_user_id': to_user_id,
+                'text': text
+              }
+            ),
+            {'Content-Type': 'application/json'}
+          ).then(function (error, text, xhr) {
+            if (error) {
+              button.value = 'Error!'
+              button.className = 'col-sm-10 btn btn-warning'
+            }
+            else {
+              button.value = 'Done!'
+              button.className = 'col-sm-10 btn btn-success blue-background'
+              button.onclick = null;
+            }
+            window.setTimeout(function () {
+              button.value = 'Send'
+              button.className = 'col-sm-10 btn btn-danger red-background'
+              button.onclick = function () { send_form(button) };
+            }, 2000)
+          })
+        }
+      }
+    }
+  </script>
+{% include 'footer.html' %}

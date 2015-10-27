@@ -1,0 +1,148 @@
+{% include 'header.html' %}
+  <div class='container-fluid'>
+    <div class='row'>
+      <div class='col-md-12'>
+        <table class='table table-condensed table-hover'>
+          <caption>
+            <div style='float: left'>
+              Pending Responses
+              &nbsp;(<span id='pending_response_count'>{{pending_response_count}}</span>)
+            </div>
+            <div style='float: right'>
+              <i class='pointer blue-color fa fa-2x fa-bomb' title='Delete All' onclick='delAll();'></i>
+            </div>
+          </caption>
+          <thead>
+            <tr>
+              <th class='col-sm-3'>Text</th>
+              <th class='col-sm-1'>Generated At</th>
+              <th class='col-sm-1'>From Plugin</th>
+              <th class='col-sm-2'>In Response To</th>
+              <th class='col-sm-1'>To Channel</th>
+              <th class='col-sm-1'>To User</th>
+              <th class='col-sm-1'>Sent?</th>
+              <th class='col-sm-1'>Approve?</th>
+              <th class='col-sm-1'>Delete?</th>
+            <tr>
+          </thead>
+        </table>
+        <div class='table-content'>
+          <table class='table table-condensed table-hover'>
+            <tbody id='table_body'>
+              {% for pending_response in pending_responses %}
+                {% if pending_response.to_channel.is_subscribed == true %}
+                  <tr>
+                    <td class='col-sm-3'><span class='response-text'>{{pending_response.text}}</span></td>
+                    <td class='col-sm-1'>{{pending_response.generated_at_to_string()}}</td>
+                    <td class='col-sm-1'>{{pending_response.from_plugin}}</td>
+                    <td class='col-sm-2'>{{pending_response.in_response_to.text}}</td>
+                    <td class='col-sm-1'>
+                      {% if pending_response.to_channel.is_direct == true %}
+                        {{pending_response.to_channel.direct_channel_user_name()}}
+                      {% else %}
+                        {{pending_response.to_channel.slack_name}}
+                      {% endif %}
+                    </td>
+                    <td class='col-sm-1'>{{pending_response.to_user.slack_name}}</td>
+                    <td class='col-sm-1' id='is_sent_{{pending_response.id}}'>{{pending_response.is_sent}}</td>
+                    <td class='col-sm-1'>
+                      <i
+                        id='approve_{{pending_response.id}}'
+                        pending_response_id='{{pending_response.id}}'
+                        onclick='approve(this);'
+                        class='pointer red-color fa fa-2x fa-send-o'
+                      ></i>
+                    </td>
+                    <td class='col-sm-1'>
+                      <i
+                        id='delete_{{pending_response.id}}'
+                        pending_response_id='{{pending_response.id}}'
+                        onclick='del(this);'
+                        class='pointer blue-color fa fa-2x fa-trash-o'
+                      ></i>
+                    </td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type='text/javascript'>
+    function approve(icon) {
+      if (confirm('Are you sure?')) {
+        var pending_response_id = icon.getAttribute('pending_response_id');
+        promise.put(
+          '/pending_responses/' + pending_response_id,
+          JSON.stringify({is_approved: true}),
+          {'Content-type': 'application/json'}
+        ).then( function(error, text, xhr) {
+          if (error) {
+            alert('Error!\n' + xhr.status);
+          }
+          else {
+            remove_row(icon);
+            dec_count();
+          }
+        })
+      }
+    }
+    function delAll() {
+      var tableBody = document.getElementById('table_body');
+      var childNodes = tableBody.childNodes;
+      for (var i = 0; i < childNodes.length; ++i) {
+        if (childNodes[i].tagName === 'TR') {
+          var grandChildNodes = childNodes[i].childNodes;
+          var last = null;
+          for (var j = 0; j < grandChildNodes.length; ++j) {
+            if (grandChildNodes[j].tagName === 'TD') {
+              last = grandChildNodes[j];
+            }
+          }
+          if (last != null) {
+            var greatGrandChildNodes = last.childNodes;
+            for (j = 0; j < greatGrandChildNodes.length; ++j) {
+              if ('getAttribute' in greatGrandChildNodes[j]) {
+                id = greatGrandChildNodes[j].getAttribute('id')
+                if (id !== undefined) {
+                  if (typeof id === 'string') {
+                    if (id.indexOf('delete_') > -1) {
+                      del(greatGrandChildNodes[j]);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    function del(icon) {
+      var pending_response_id = icon.getAttribute('pending_response_id');
+      promise.del(
+        '/pending_responses/' + pending_response_id
+      ).then( function(error, text, xhr) {
+        if (error) {
+          alert('Error!\n' + xhr.status);
+        }
+        else {
+          remove_row(icon);
+          dec_count();
+        }
+      })
+    }
+    function remove_row(icon) {
+      var row = icon.parentNode.parentNode;
+      var table = row.parentNode;
+      table.removeChild(row);
+    }
+    function dec_count() {
+      var pendingResponseCount = document.getElementById('pending_response_count');
+      var value = parseInt(pendingResponseCount.innerHTML, 10);
+      value -= 1;
+      pendingResponseCount.innerHTML = value;
+    }
+  </script>
+{% include 'footer.html' %}

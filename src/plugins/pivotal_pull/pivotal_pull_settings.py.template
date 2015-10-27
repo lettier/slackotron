@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+'''
+  DAVID LETTIER
+  (C) 2015.
+
+  http://www.lettier.com/
+
+  Slackotron
+'''
+
+'''
+  API_ENDPOINT
+'''
+
+API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/'
+
+'''
+  API_TOKEN
+'''
+
+API_TOKEN = ''

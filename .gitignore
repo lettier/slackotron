@@ -3,4 +3,6 @@
 *settings.py
 dependencies/*
 database/slackotron.db*
+database/*.db
 locks/
+*__pycache__*
