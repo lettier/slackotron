@@ -67,6 +67,7 @@ class ChannelPublisher(Scribe, object):
             response.save()
             self.info(response)
         except Exception as e:
+          self.error(e.__class__.__name__)
           self.error(e)
         finally:
           g.next()

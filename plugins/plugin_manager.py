@@ -51,3 +51,4 @@ class PluginManager(Scribe, object):
     self.info('Stopping plugins.')
     for plugin in self.plugins:
       plugin.kill()
+    self.plugins = []

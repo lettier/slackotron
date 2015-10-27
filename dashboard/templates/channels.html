@@ -21,7 +21,13 @@
                 <tr>
                   <td class='col-sm-1'>{{direct_channel.direct_channel_user_name()}}</td>
                   <td class='col-sm-1'>{{direct_channel.slack_id}}</td>
-                  <td class='col-sm-1'>{{direct_channel.is_direct}}</td>
+                  <td class='col-sm-1'>
+                    {% if direct_channel.is_direct == true %}
+                      <i class='fa fa-circle'></i>
+                    {% else %}
+                      <i class='fa fa-circle-o'></i>
+                    {% endif %}
+                  </td>
                   <td class='col-sm-1' channelId='{{direct_channel.id}}' channelProperty='is_secure' onclick='toggle(this, "fa-toggle-on");'>
                     {% if direct_channel.is_secure == true %}
                       <i class='pointer fa fa-2x fa-toggle-on'></i>
@@ -42,7 +48,13 @@
                 <tr>
                   <td class='col-sm-1'>{{channel.slack_name}}</td>
                   <td class='col-sm-1'>{{channel.slack_id}}</td>
-                  <td class='col-sm-1'>{{channel.is_direct}}</td>
+                  <td class='col-sm-1'>
+                    {% if channel.is_direct == true %}
+                      <i class='fa fa-circle'></i>
+                    {% else %}
+                      <i class='fa fa-circle-o'></i>
+                    {% endif %}
+                  </td>
                   <td class='col-sm-1' channelId='{{channel.id}}' channelProperty='is_secure' onclick='toggle(this, "fa-toggle-on");'>
                     {% if channel.is_secure == true %}
                       <i class='pointer fa fa-2x fa-toggle-on'></i>
