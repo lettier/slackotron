@@ -14,7 +14,7 @@ logilab-common==1.1.0
 logutils==0.3.3
 mando==0.3.3
 MarkupSafe==0.23
-nltk==3.2.0
+nltk==3.4.5
 numpy==1.9.1
 Pattern==2.6
 peewee==2.6.4
