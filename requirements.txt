@@ -26,7 +26,7 @@ pytz==2014.10
 radon==1.2.2
 rainbow-logging-handler==2.2.2
 redis==2.10.3
-requests==2.5.1
+requests==2.20.0
 simplejson==3.6.5
 six==1.10.0
 suds==0.4
