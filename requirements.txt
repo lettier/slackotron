@@ -5,7 +5,7 @@ beautifulsoup4==4.3.2
 billiard==3.3.0.19
 colorama==0.3.2
 Flask==0.10.1
-httplib2==0.9
+httplib2==0.19.0
 itsdangerous==0.24
 Jinja2==2.7.3
 jsonrpclib-pelix==0.2.2
