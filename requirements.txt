@@ -7,7 +7,7 @@ colorama==0.3.2
 Flask==0.10.1
 httplib2==0.9
 itsdangerous==0.24
-Jinja2==2.7.3
+Jinja2==2.11.3
 jsonrpclib-pelix==0.2.2
 kombu==3.0.24
 logilab-common==1.1.0
