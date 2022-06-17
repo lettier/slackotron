@@ -15,7 +15,7 @@ logutils==0.3.3
 mando==0.3.3
 MarkupSafe==0.23
 nltk==3.2.0
-numpy==1.9.1
+numpy==1.21.0
 Pattern==2.6
 peewee==2.6.4
 pexpect==3.3
