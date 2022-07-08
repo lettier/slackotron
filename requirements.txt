@@ -29,7 +29,7 @@ redis==2.10.3
 requests==2.5.1
 simplejson==3.6.5
 six==1.10.0
-suds==0.4
+suds==1.0.0
 noun_hound==1.0.0
 Unidecode==0.4.17
 Werkzeug==0.9.6
