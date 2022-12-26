@@ -33,4 +33,4 @@ suds==0.4
 noun_hound==1.0.0
 Unidecode==0.4.17
 Werkzeug==0.9.6
-wheel==0.24.0
+wheel==0.38.1
